@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#0b6e69" />
+    <title>BedrijfBrian | Admin center</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <a class="brand" href="/portal.html" aria-label="BedrijfBrian Portal">
+          <span class="brand-mark">B</span><span>BedrijfBrian</span>
+        </a>
+        <nav aria-label="Portal navigation">
+          <a class="nav-link" href="/portal.html">Employee portal</a>
+          <a class="nav-link" href="/support.html">Support desk</a>
+          <a class="nav-link active" href="/admin.html">Admin center</a>
+        </nav>
+        <div class="sidebar-bottom">
+          <p class="small-label">SIGNED IN AS</p>
+          <p id="user-name" class="user-name">Loading account…</p>
+          <a class="sign-out" href="/.auth/logout?post_logout_redirect_uri=/">Sign out</a>
+        </div>
+      </aside>
+
+      <main class="portal-main">
+        <header class="portal-header">
+          <div>
+            <p class="eyebrow">ADMIN CENTER</p>
+            <h1>Manage the company workspace.</h1>
+            <p class="header-text">Send team tasks, publish updates and keep the knowledge base useful.</p>
+          </div>
+          <div class="role-badge" id="role-badge">IT administrator</div>
+        </header>
+
+        <p id="app-notice" class="app-notice hidden" role="status"></p>
+
+        <section class="metric-grid" aria-label="Admin overview">
+          <article class="metric-card accent"><p>ACTIVE TASKS</p><strong id="active-tasks">0</strong><span class="metric-note">Across both teams</span></article>
+          <article class="metric-card"><p>COMPANY UPDATES</p><strong id="announcement-count">0</strong><span class="metric-note">Visible to all staff</span></article>
+          <article class="metric-card"><p>KNOWLEDGE ARTICLES</p><strong id="knowledge-count">0</strong><span class="metric-note">Available in Employee portal</span></article>
+        </section>
+
+        <section class="content-section admin-grid">
+          <article class="admin-card">
+            <p class="eyebrow">NEW TEAM TASK</p>
+            <h2>Send a task</h2>
+            <form id="task-form" class="workspace-form">
+              <label>Task title<input id="task-title" name="title" maxlength="120" required placeholder="e.g. Review the new support process" /></label>
+              <label>Send to<select id="task-audience" name="audience"><option value="employee">All employees</option><option value="support">Support team</option></select></label>
+              <button class="button button-primary" type="submit">Publish task</button>
+            </form>
+          </article>
+
+          <article class="admin-card">
+            <p class="eyebrow">COMPANY UPDATE</p>
+            <h2>Publish an update</h2>
+            <form id="announcement-form" class="workspace-form">
+              <label>Headline<input id="announcement-title" name="title" maxlength="90" required placeholder="e.g. New portal features" /></label>
+              <label>Update<textarea id="announcement-body" name="body" maxlength="500" required placeholder="What should colleagues know?"></textarea></label>
+              <button class="button button-primary" type="submit">Publish update</button>
+            </form>
+          </article>
+
+          <article class="admin-card">
+            <p class="eyebrow">KNOWLEDGE BASE</p>
+            <h2>Add a quick answer</h2>
+            <form id="knowledge-form" class="workspace-form">
+              <label>Question or title<input id="knowledge-title" name="title" maxlength="90" required placeholder="e.g. How do I get IT support?" /></label>
+              <label>Answer<textarea id="knowledge-body" name="body" maxlength="700" required placeholder="Write a short, clear answer."></textarea></label>
+              <button class="button button-primary" type="submit">Add article</button>
+            </form>
+          </article>
+        </section>
+
+        <section class="content-section split-section">
+          <div>
+            <div class="section-heading"><div><p class="eyebrow">TASK OVERVIEW</p><h2>Manage active work</h2></div></div>
+            <div id="admin-task-list" class="task-list"></div>
+          </div>
+          <div>
+            <div class="section-heading"><div><p class="eyebrow">RECENT TEAM STATUS</p><h2>Colleague updates</h2></div></div>
+            <div id="status-feed" class="status-feed"></div>
+          </div>
+        </section>
+      </main>
+    </div>
+    <script type="module" src="/admin.js"></script>
+  </body>
+</html>
