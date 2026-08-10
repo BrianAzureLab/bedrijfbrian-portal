@@ -1,0 +1,13 @@
+{
+  "name": "bedrijfbrian-portal-api",
+  "version": "1.0.0",
+  "private": true,
+  "main": "src/index.js",
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@azure/cosmos": "^4.5.0",
+    "@azure/functions": "^4.7.2"
+  }
+}
