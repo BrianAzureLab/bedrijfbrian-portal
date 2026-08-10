@@ -7,8 +7,23 @@
     {
       "route": "/portal.html",
       "allowedRoles": ["employee", "support", "itadmin"]
+    },
+    {
+      "route": "/support.html",
+      "allowedRoles": ["support", "itadmin"]
+    },
+    {
+      "route": "/admin.html",
+      "allowedRoles": ["itadmin"]
+    },
+    {
+      "route": "/api/*",
+      "allowedRoles": ["employee", "support", "itadmin"]
     }
   ],
+  "platform": {
+    "apiRuntime": "node:20"
+  },
   "responseOverrides": {
     "401": {
       "statusCode": 302,
