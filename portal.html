@@ -1,23 +1,25 @@
 <!doctype html>
-<html lang="nl">
+<html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#0b6e69" />
-    <title>BedrijfBrian | Portal</title>
+    <title>BedrijfBrian | Employee portal</title>
     <link rel="stylesheet" href="/styles.css" />
   </head>
   <body>
     <div class="app-shell">
       <aside class="sidebar">
         <a class="brand" href="/portal.html" aria-label="BedrijfBrian Portal">
-          <span class="brand-mark">B</span>
-          <span>BedrijfBrian</span>
+          <span class="brand-mark">B</span><span>BedrijfBrian</span>
         </a>
         <nav aria-label="Portal navigation">
           <a class="nav-link active" href="#overview">Overview</a>
           <a class="nav-link" href="#tasks">My tasks</a>
-          <a class="nav-link" href="#resources">Resources</a>
+          <a class="nav-link" href="#knowledge">Knowledge base</a>
+          <a class="nav-link" href="#status">Team status</a>
+          <a class="nav-link hidden" id="support-nav" href="/support.html">Support desk</a>
+          <a class="nav-link hidden" id="admin-nav" href="/admin.html">Admin center</a>
         </nav>
         <div class="sidebar-bottom">
           <p class="small-label">SIGNED IN AS</p>
@@ -30,27 +32,29 @@
         <header class="portal-header">
           <div>
             <p class="eyebrow">EMPLOYEE PORTAL</p>
-            <h1>Good morning, <span id="first-name">employee</span>.</h1>
-            <p class="header-text">Here is your workday at a glance.</p>
+            <h1>Welcome, <span id="first-name">employee</span>.</h1>
+            <p class="header-text">Your tasks, company updates and practical knowledge in one place.</p>
           </div>
           <div class="role-badge" id="role-badge">Employee</div>
         </header>
 
+        <p id="app-notice" class="app-notice hidden" role="status"></p>
+
         <section id="overview" class="metric-grid" aria-label="Portal overview">
           <article class="metric-card accent">
-            <p>ONBOARDING PROGRESS</p>
+            <p>MY PROGRESS</p>
             <strong id="progress-value">0%</strong>
             <div class="progress-track"><span id="progress-bar"></span></div>
           </article>
           <article class="metric-card">
             <p>OPEN TASKS</p>
-            <strong id="open-tasks">5</strong>
-            <span class="metric-note">Complete them at your own pace</span>
+            <strong id="open-tasks">0</strong>
+            <span class="metric-note">Tasks assigned to your role</span>
           </article>
           <article class="metric-card">
             <p>ACCOUNT SECURITY</p>
             <strong class="metric-status">Protected</strong>
-            <span class="metric-note">MFA enabled through Entra ID</span>
+            <span class="metric-note">MFA via Microsoft Entra ID</span>
           </article>
         </section>
 
@@ -58,46 +62,33 @@
           <div class="section-heading">
             <div>
               <p class="eyebrow">MY TASKS</p>
-              <h2>Start with the essentials</h2>
+              <h2>Work through your assigned tasks</h2>
             </div>
-            <button class="text-button" id="reset-tasks" type="button">Reset demo</button>
           </div>
           <div id="task-list" class="task-list" aria-live="polite"></div>
-          <p class="storage-note">Your task progress is stored locally in this browser for this demo.</p>
         </section>
 
-        <section id="resources" class="content-section resource-section">
+        <section class="content-section split-section">
+          <div>
+            <div class="section-heading"><div><p class="eyebrow">COMPANY UPDATES</p><h2>What is new</h2></div></div>
+            <div id="announcement-list" class="stack-list"></div>
+          </div>
+          <div id="knowledge">
+            <div class="section-heading"><div><p class="eyebrow">KNOWLEDGE BASE</p><h2>Quick answers</h2></div></div>
+            <div id="knowledge-list" class="stack-list"></div>
+          </div>
+        </section>
+
+        <section id="status" class="content-section">
           <div class="section-heading">
-            <div>
-              <p class="eyebrow">RESOURCES</p>
-              <h2>Company essentials</h2>
-            </div>
+            <div><p class="eyebrow">TEAM STATUS</p><h2>Share a work update</h2></div>
+            <span class="section-note">Preset messages only</span>
           </div>
-          <div class="resource-grid">
-            <article class="resource-card">
-              <span class="resource-icon">⌁</span>
-              <h3>Security basics</h3>
-              <p>Use MFA, protect your password and report suspicious activity.</p>
-              <span class="resource-label">Required reading</span>
-            </article>
-            <article class="resource-card">
-              <span class="resource-icon">?</span>
-              <h3>Need support?</h3>
-              <p>Use this space to find the support process and common answers.</p>
-              <span class="resource-label">Support</span>
-            </article>
-            <article class="resource-card">
-              <span class="resource-icon">⌘</span>
-              <h3>IT services</h3>
-              <p>Access requests and technical guidance will appear here later.</p>
-              <span class="resource-label">IT</span>
-            </article>
-          </div>
+          <div id="status-options" class="status-options" aria-label="Choose a team status"></div>
+          <div id="status-feed" class="status-feed" aria-live="polite"></div>
         </section>
-
-        <section id="role-panel" class="role-panel hidden" aria-live="polite"></section>
       </main>
     </div>
-    <script src="/portal.js"></script>
+    <script type="module" src="/portal.js"></script>
   </body>
 </html>
