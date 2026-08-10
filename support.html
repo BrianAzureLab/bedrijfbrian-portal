@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#0b6e69" />
+    <title>BedrijfBrian | Support desk</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <a class="brand" href="/portal.html" aria-label="BedrijfBrian Portal">
+          <span class="brand-mark">B</span><span>BedrijfBrian</span>
+        </a>
+        <nav aria-label="Portal navigation">
+          <a class="nav-link" href="/portal.html">Employee portal</a>
+          <a class="nav-link active" href="/support.html">Support desk</a>
+          <a class="nav-link hidden" id="admin-nav" href="/admin.html">Admin center</a>
+        </nav>
+        <div class="sidebar-bottom">
+          <p class="small-label">SIGNED IN AS</p>
+          <p id="user-name" class="user-name">Loading account…</p>
+          <a class="sign-out" href="/.auth/logout?post_logout_redirect_uri=/">Sign out</a>
+        </div>
+      </aside>
+
+      <main class="portal-main">
+        <header class="portal-header">
+          <div>
+            <p class="eyebrow">SUPPORT DESK</p>
+            <h1>Support team workspace.</h1>
+            <p class="header-text">Tasks assigned by IT, plus the latest company updates.</p>
+          </div>
+          <div class="role-badge" id="role-badge">Support</div>
+        </header>
+
+        <p id="app-notice" class="app-notice hidden" role="status"></p>
+
+        <section class="metric-grid" aria-label="Support overview">
+          <article class="metric-card accent">
+            <p>OPEN SUPPORT TASKS</p>
+            <strong id="open-tasks">0</strong>
+            <span class="metric-note">Assigned to the Support team</span>
+          </article>
+          <article class="metric-card">
+            <p>TEAM ACCESS</p>
+            <strong class="metric-status">Enabled</strong>
+            <span class="metric-note">Your Support role unlocks this page</span>
+          </article>
+          <article class="metric-card">
+            <p>ACCOUNT SECURITY</p>
+            <strong class="metric-status">Protected</strong>
+            <span class="metric-note">MFA via Microsoft Entra ID</span>
+          </article>
+        </section>
+
+        <section class="content-section">
+          <div class="section-heading"><div><p class="eyebrow">TEAM TASKS</p><h2>Support work queue</h2></div></div>
+          <div id="task-list" class="task-list" aria-live="polite"></div>
+        </section>
+
+        <section class="content-section split-section">
+          <div>
+            <div class="section-heading"><div><p class="eyebrow">COMPANY UPDATES</p><h2>Stay informed</h2></div></div>
+            <div id="announcement-list" class="stack-list"></div>
+          </div>
+          <div>
+            <div class="section-heading"><div><p class="eyebrow">TEAM STATUS</p><h2>Recent updates</h2></div></div>
+            <div id="status-feed" class="status-feed"></div>
+          </div>
+        </section>
+      </main>
+    </div>
+    <script type="module" src="/support.js"></script>
+  </body>
+</html>
