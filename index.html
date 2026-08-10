@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="nl">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#0b6e69" />
+    <title>BedrijfBrian | Employee Portal</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body class="landing-page">
+    <header class="site-header">
+      <a class="brand" href="/" aria-label="BedrijfBrian home">
+        <span class="brand-mark">B</span>
+        <span>BedrijfBrian</span>
+      </a>
+      <span class="header-label">Employee Portal</span>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="hero-copy">
+          <p class="eyebrow">INTERNAL ACCESS</p>
+          <h1>Everything your workday needs, in one place.</h1>
+          <p class="hero-text">
+            Complete onboarding tasks, find company information and access the
+            tools relevant to your role.
+          </p>
+          <a class="button button-primary" href="/.auth/login/aad?post_login_redirect_uri=/portal.html">
+            Sign in with Microsoft
+            <span aria-hidden="true">→</span>
+          </a>
+          <p class="helper-text">Use your BedrijfBrian work account.</p>
+        </div>
+
+        <div class="hero-panel" aria-label="Portal highlights">
+          <div class="panel-heading">
+            <span class="status-dot"></span>
+            <span>Company services</span>
+          </div>
+          <div class="highlight-card">
+            <span class="highlight-icon">✓</span>
+            <div>
+              <strong>Secure sign-in</strong>
+              <p>Protected with Microsoft Entra and MFA.</p>
+            </div>
+          </div>
+          <div class="highlight-card">
+            <span class="highlight-icon">◌</span>
+            <div>
+              <strong>Role-based access</strong>
+              <p>Only assigned employees can open the portal.</p>
+            </div>
+          </div>
+          <div class="highlight-card">
+            <span class="highlight-icon">↗</span>
+            <div>
+              <strong>Self-service tasks</strong>
+              <p>Keep track of your onboarding progress.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="trust-bar" aria-label="Portal benefits">
+        <span>Microsoft Entra ID</span>
+        <span>Multi-factor authentication</span>
+        <span>Role-based access</span>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <span>© BedrijfBrian</span>
+      <span>Internal test environment</span>
+    </footer>
+  </body>
+</html>
