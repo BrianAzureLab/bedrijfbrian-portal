@@ -1,95 +1,101 @@
-const tasks = [
-  "Read the BedrijfBrian security basics",
-  "Confirm your MFA registration works",
-  "Check your assigned access role",
-  "Complete your onboarding profile",
-  "Review where to ask for IT support"
-];
+import {
+  fallbackBoard,
+  getBoard,
+  getPrincipal,
+  postAction,
+  renderBoardLists,
+  setAppNotice,
+  setShellIdentity
+} from "/app.js";
 
-let storageKey = "bedrijfbrian-portal-tasks";
-
-function readProgress() {
-  try {
-    return JSON.parse(localStorage.getItem(storageKey)) || {};
-  } catch {
-    return {};
-  }
-}
-
-function saveProgress(progress) {
-  localStorage.setItem(storageKey, JSON.stringify(progress));
-}
-
-function updateMetrics(progress) {
-  const complete = Object.values(progress).filter(Boolean).length;
-  const percentage = Math.round((complete / tasks.length) * 100);
-  document.querySelector("#progress-value").textContent = `${percentage}%`;
-  document.querySelector("#progress-bar").style.width = `${percentage}%`;
-  document.querySelector("#open-tasks").textContent = String(tasks.length - complete);
-}
+let board = fallbackBoard;
 
 function renderTasks() {
-  const progress = readProgress();
   const list = document.querySelector("#task-list");
   list.replaceChildren();
 
-  tasks.forEach((task, index) => {
-    const id = `task-${index}`;
-    const row = document.createElement("div");
-    row.className = `task${progress[id] ? " done" : ""}`;
-    row.innerHTML = `<input id="${id}" type="checkbox" ${progress[id] ? "checked" : ""}><label for="${id}">${task}</label>`;
-    const checkbox = row.querySelector("input");
-    checkbox.addEventListener("change", () => {
-      const current = readProgress();
-      current[id] = checkbox.checked;
-      saveProgress(current);
-      renderTasks();
+  board.tasks.forEach((task) => {
+    const row = document.createElement("label");
+    row.className = `task${task.complete ? " done" : ""}`;
+    const input = document.createElement("input");
+    input.type = "checkbox";
+    input.checked = task.complete;
+    input.addEventListener("change", async () => {
+      input.disabled = true;
+      try {
+        board = await postAction("toggleTask", { taskId: task.id });
+        render();
+      } catch {
+        input.checked = !input.checked;
+        input.disabled = false;
+        setAppNotice("Your task could not be saved. Try again in a moment.");
+      }
     });
+    const text = document.createElement("span");
+    text.textContent = task.title;
+    row.append(input, text);
     list.append(row);
   });
-  updateMetrics(progress);
-}
 
-function renderRolePanel(roles) {
-  const panel = document.querySelector("#role-panel");
-  if (roles.includes("itadmin")) {
-    panel.classList.remove("hidden");
-    panel.innerHTML = "<h3>IT view enabled</h3><p>You have access to the future IT administration area. In this lab, it confirms that your IT role assignment works.</p>";
-  } else if (roles.includes("support")) {
-    panel.classList.remove("hidden");
-    panel.innerHTML = "<h3>Support view enabled</h3><p>You have access to the future support area. In this lab, it confirms that your Support role assignment works.</p>";
+  if (!board.tasks.length) {
+    const empty = document.createElement("p");
+    empty.className = "empty-state";
+    empty.textContent = "No employee tasks are assigned right now.";
+    list.append(empty);
   }
 }
 
-async function loadIdentity() {
+function renderMetrics() {
+  const total = board.tasks.length;
+  const completed = board.tasks.filter((task) => task.complete).length;
+  const percentage = total ? Math.round((completed / total) * 100) : 0;
+  document.querySelector("#progress-value").textContent = `${percentage}%`;
+  document.querySelector("#progress-bar").style.width = `${percentage}%`;
+  document.querySelector("#open-tasks").textContent = String(total - completed);
+}
+
+function renderStatus() {
+  const options = document.querySelector("#status-options");
+  options.replaceChildren();
+  board.statusOptions.forEach((message) => {
+    const button = document.createElement("button");
+    button.className = "status-button";
+    button.type = "button";
+    button.textContent = message;
+    button.addEventListener("click", async () => {
+      button.disabled = true;
+      try {
+        board = await postAction("postStatus", { message });
+        render();
+      } catch {
+        button.disabled = false;
+        setAppNotice("Your status could not be shared. Try again in a moment.");
+      }
+    });
+    options.append(button);
+  });
+}
+
+function render() {
+  renderMetrics();
+  renderTasks();
+  renderBoardLists(board, {
+    announcements: "#announcement-list",
+    knowledge: "#knowledge-list",
+    status: "#status-feed"
+  });
+  renderStatus();
+}
+
+async function start() {
+  const principal = await getPrincipal();
+  setShellIdentity(principal);
   try {
-    const response = await fetch("/.auth/me");
-    const payload = await response.json();
-    const principal = payload.clientPrincipal;
-    if (!principal) return;
-
-    const name = principal.userDetails || "employee";
-    storageKey = `bedrijfbrian-portal-tasks-${name.toLowerCase()}`;
-    const firstName = name.split(/[.@ ]/)[0] || "employee";
-    const roles = principal.userRoles || [];
-
-    document.querySelector("#user-name").textContent = name;
-    document.querySelector("#first-name").textContent = firstName;
-    document.querySelector("#role-badge").textContent = roles.includes("itadmin")
-      ? "IT administrator"
-      : roles.includes("support")
-        ? "Support"
-        : "Employee";
-    renderRolePanel(roles);
+    board = await getBoard("employee");
   } catch {
-    document.querySelector("#user-name").textContent = "Work account";
+    setAppNotice("Shared portal data will appear after the database connection is completed.");
   }
-  renderTasks();
+  render();
 }
 
-document.querySelector("#reset-tasks").addEventListener("click", () => {
-  localStorage.removeItem(storageKey);
-  renderTasks();
-});
-
-loadIdentity();
+start();
