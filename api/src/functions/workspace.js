@@ -22,6 +22,15 @@ function json(status, body) {
   };
 }
 
+function safeWorkspaceError(error) {
+  const code = Number(error?.statusCode || error?.code || 0);
+  if (code === 401) return "Cosmos rejected the configured key.";
+  if (code === 403) return "Cosmos denied access to the configured account.";
+  if (code === 404) return "Cosmos could not find the configured database or container.";
+  if (code === 429) return "Cosmos is temporarily busy. Try again in a moment.";
+  return "The workspace API could not reach Cosmos.";
+}
+
 function getPrincipal(request) {
   const value = request.headers.get("x-ms-client-principal");
   if (!value) throw new HttpError(401, "Sign-in is required.");
@@ -272,7 +281,7 @@ app.http("workspace", {
     } catch (error) {
       if (error instanceof HttpError) return json(error.status, { error: error.message });
       console.error("Workspace API error", error);
-      return json(500, { error: "The workspace could not process this request." });
+      return json(500, { error: safeWorkspaceError(error) });
     }
   }
 });
