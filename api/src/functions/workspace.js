@@ -35,7 +35,19 @@ function safeWorkspaceError(error) {
   if (signal === "ENOTFOUND" || signal === "ECONNREFUSED" || signal === "ETIMEDOUT") {
     return `The workspace API cannot reach Cosmos (${signal}).`;
   }
-  return `The workspace API could not reach Cosmos (${signal}).`;
+
+  // Return only a scrubbed diagnostic. It helps us identify a runtime issue
+  // without exposing account keys, endpoints or other secrets in the portal.
+  const detail = String(error?.message || "")
+    .replace(/(accountkey|key|password|secret)\s*[=:]\s*[^\s,;]+/gi, (_, label) => `${label}=[hidden]`)
+    .replace(/https?:\/\/[^\s,;]+/gi, "[endpoint]")
+    .replace(/[A-Za-z0-9+/]{32,}={0,2}/g, "[hidden]")
+    .replace(/\s+/g, " ")
+    .trim()
+    .slice(0, 160);
+  return detail
+    ? `The workspace API failed (${signal}): ${detail}`
+    : `The workspace API could not reach Cosmos (${signal}).`;
 }
 
 function getPrincipal(request) {
