@@ -50,8 +50,22 @@ function safeWorkspaceError(error) {
     : `The workspace API could not reach Cosmos (${signal}).`;
 }
 
+function getRequestHeader(request, name) {
+  const headers = request?.headers;
+  if (typeof headers?.get === "function") return headers.get(name);
+  if (headers && typeof headers === "object") return headers[name] || headers[name.toLowerCase()];
+  return undefined;
+}
+
+function getRequestQuery(request, name) {
+  const query = request?.query;
+  if (typeof query?.get === "function") return query.get(name);
+  if (query && typeof query === "object") return query[name];
+  return undefined;
+}
+
 function getPrincipal(request) {
-  const value = request.headers.get("x-ms-client-principal");
+  const value = getRequestHeader(request, "x-ms-client-principal");
   if (!value) throw new HttpError(401, "Sign-in is required.");
   try {
     const principal = JSON.parse(Buffer.from(value, "base64").toString("utf8"));
@@ -293,7 +307,7 @@ app.http("workspace", {
       const principal = getPrincipal(request);
       if (request.method === "GET") {
         const { board } = await getBoardDocument();
-        return json(200, boardFor(principal, request.query.get("view"), board));
+        return json(200, boardFor(principal, getRequestQuery(request, "view"), board));
       }
       const payload = await request.json();
       return json(200, await handleAction(principal, payload));
