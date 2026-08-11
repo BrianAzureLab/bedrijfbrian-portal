@@ -23,12 +23,19 @@ function json(status, body) {
 }
 
 function safeWorkspaceError(error) {
-  const code = Number(error?.statusCode || error?.code || 0);
+  const rawCode = error?.statusCode ?? error?.code;
+  const code = Number(rawCode);
   if (code === 401) return "Cosmos rejected the configured key.";
   if (code === 403) return "Cosmos denied access to the configured account.";
   if (code === 404) return "Cosmos could not find the configured database or container.";
   if (code === 429) return "Cosmos is temporarily busy. Try again in a moment.";
-  return "The workspace API could not reach Cosmos.";
+
+  const signal = String(rawCode || error?.name || "unknown").replace(/[^A-Za-z0-9_.-]/g, "").slice(0, 40);
+  if (signal === "MODULE_NOT_FOUND") return "The workspace API package is missing.";
+  if (signal === "ENOTFOUND" || signal === "ECONNREFUSED" || signal === "ETIMEDOUT") {
+    return `The workspace API cannot reach Cosmos (${signal}).`;
+  }
+  return `The workspace API could not reach Cosmos (${signal}).`;
 }
 
 function getPrincipal(request) {
