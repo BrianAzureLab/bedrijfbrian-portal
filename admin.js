@@ -83,8 +83,8 @@ async function start() {
   wireForms();
   try {
     board = await getBoard("admin");
-  } catch {
-    setAppNotice("Shared admin data will appear after the database connection is completed.");
+  } catch (error) {
+    setAppNotice(error.message);
   }
   render();
 }
