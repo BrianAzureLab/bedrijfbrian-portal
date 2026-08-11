@@ -155,16 +155,33 @@ function seedBoard() {
   };
 }
 
+function normalizeBoard(candidate) {
+  const fallback = seedBoard();
+  if (!candidate || typeof candidate !== "object") return fallback;
+
+  return {
+    ...candidate,
+    id: candidate.id || BOARD_ID,
+    category: candidate.category || PARTITION,
+    tasks: Array.isArray(candidate.tasks) ? candidate.tasks : fallback.tasks,
+    announcements: Array.isArray(candidate.announcements) ? candidate.announcements : fallback.announcements,
+    knowledge: Array.isArray(candidate.knowledge) ? candidate.knowledge : fallback.knowledge,
+    statuses: Array.isArray(candidate.statuses) ? candidate.statuses : fallback.statuses
+  };
+}
+
 async function getBoardDocument() {
   const container = getContainer();
   try {
-    const { resource } = await container.item(BOARD_ID, PARTITION).read();
-    return { container, board: resource };
+    const response = await container.item(BOARD_ID, PARTITION).read();
+    const board = normalizeBoard(response.resource);
+    if (!response.resource) await container.items.upsert(board);
+    return { container, board };
   } catch (error) {
     if (error.code !== 404) throw error;
     const board = seedBoard();
     try {
-      await container.items.create(board);
+      await container.items.upsert(board);
       return { container, board };
     } catch (createError) {
       if (createError.code !== 409) throw createError;
@@ -220,8 +237,8 @@ function cleanText(value, label, maxLength) {
 async function updateBoard(mutator) {
   const { container, board } = await getBoardDocument();
   mutator(board);
-  const { resource } = await container.item(BOARD_ID, PARTITION).replace(board, { accessCondition: { type: "IfMatch", condition: board._etag } });
-  return resource;
+  const response = await container.item(BOARD_ID, PARTITION).replace(board, { accessCondition: { type: "IfMatch", condition: board._etag } });
+  return response.resource || board;
 }
 
 function findTask(board, taskId) {
