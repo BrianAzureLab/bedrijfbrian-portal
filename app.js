@@ -57,8 +57,9 @@ export function setAppNotice(message) {
 
 export async function getBoard(view) {
   const response = await fetch(`/api/workspace?view=${encodeURIComponent(view)}`, { cache: "no-store" });
-  if (!response.ok) throw new Error("Could not load workspace");
-  return response.json();
+  const payload = await response.json().catch(() => ({}));
+  if (!response.ok) throw new Error(payload.error || "Could not load workspace");
+  return payload;
 }
 
 export async function postAction(action, data = {}) {
@@ -67,8 +68,9 @@ export async function postAction(action, data = {}) {
     headers: { "content-type": "application/json" },
     body: JSON.stringify({ action, ...data })
   });
-  if (!response.ok) throw new Error("Could not update workspace");
-  return response.json();
+  const payload = await response.json().catch(() => ({}));
+  if (!response.ok) throw new Error(payload.error || "Could not update workspace");
+  return payload;
 }
 
 function makeTextCard(item, type) {
